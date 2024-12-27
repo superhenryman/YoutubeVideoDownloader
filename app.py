@@ -43,4 +43,4 @@ def Download(todownload):
     except Exception as e:
         print(f"Error! Details: {e}")
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
