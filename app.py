@@ -40,6 +40,7 @@ def Download(todownload):
         'format': 'best',
         'outtmpl': '%(title)s.%(ext)s',
         'noplaylist': True,
+        'cookiefile': 'cookies.txt',
     }
     try:
         with yt.YoutubeDL(ydl_opts) as ydl:
@@ -63,6 +64,7 @@ def home():
         todownload = request.form.get("data")
         if todownload:
             try:
+                filepath = None
                 if "youtube.com" not in todownload and "youtu.be" not in todownload:
                     raise ValueError("Only Youtube links are allowed!")
                 conn = get_connection()
@@ -81,7 +83,7 @@ def home():
                     mimetype="video/mp4"
                 )
             except Exception as e:
-                return render_template("index.html", error=f"Error: {str(e)}")
+                app.logger.error(f"Error! {e}")
             finally:
                   if filepath and os.path.exists(filepath):  # Safely remove the file
                     os.remove(filepath)
