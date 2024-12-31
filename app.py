@@ -56,7 +56,7 @@ def Download(todownload):
 
             return file_stream, title
     except Exception as e:
-        logger.error(f"Error! Details: {e}")
+        app.logger.error(f"Error! Details: {e}")
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
@@ -72,7 +72,8 @@ def home():
                 cur.close()
                 conn.close()
                 filepath, title = Download(todownload=todownload)
-                #file_stream, title = Download(todownload=todownload)
+                with open(filepath, 'rb') as f:
+                    file_stream = BytesIO(f.read())
                 return send_file(
                     file_stream,
                     as_attachment=True,
@@ -82,7 +83,7 @@ def home():
             except Exception as e:
                 return render_template("index.html", error=f"Error: {str(e)}")
             finally:
-                if os.path.exists(filepath):
+                  if filepath and os.path.exists(filepath):  # Safely remove the file
                     os.remove(filepath)
     return render_template("index.html", error=None)
 
